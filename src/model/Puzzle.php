@@ -16,7 +16,7 @@ class Puzzle
 		$this->setIdentifier();
 	}
 
-	public function fillOut(): void
+	public function fillOut(): bool
 	{
 		do {
 			$canFill = false;
@@ -30,6 +30,8 @@ class Puzzle
 							$this->rowsWithColumns[$rowIndex][$columnIndex] = $possibleSolutions[0];
 
 							$canFill = true;
+						} else if (\count($possibleSolutions) === 0) {
+							return false;
 						}
 					}
 				}
@@ -37,6 +39,8 @@ class Puzzle
 		} while ($canFill);
 
 		$this->setSolved();
+
+		return true;
 	}
 
 	public function createAlternatives(): array
