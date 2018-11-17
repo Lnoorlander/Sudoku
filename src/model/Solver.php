@@ -20,12 +20,12 @@ class Solver
 		$this->originalPuzzle->fillOut();
 
 		if ($this->originalPuzzle->getSolved()) {
-			$this->solutions[] = $this->originalPuzzle;
+			$this->solutions[$this->originalPuzzle->solvedIdentifier()] = $this->originalPuzzle;
 		} else {
 			$alternativePuzzles = $this->originalPuzzle->createAlternatives();
 
 			foreach ($alternativePuzzles as $alternativePuzzle) {
-				$this->alternativePuzzles[$alternativePuzzle->identifier()] = $alternativePuzzle;
+				$this->alternativePuzzles[$alternativePuzzle->getIdentifier()] = $alternativePuzzle;
 			}
 		}
 
@@ -39,9 +39,13 @@ class Solver
 				$alternativePuzzle->fillOut();
 
 				if ($alternativePuzzle->getSolved()) {
-					$this->solutions[] = $alternativePuzzle;
+					$this->solutions[$alternativePuzzle->solvedIdentifier()] = $alternativePuzzle;
 				} else {
-					$this->alternativePuzzles = array_merge($this->alternativePuzzles, $alternativePuzzle->createAlternatives());
+					$alternativePuzzles = $alternativePuzzle->createAlternatives();
+
+					foreach ($alternativePuzzles as $newAlternativePuzzle) {
+						$this->alternativePuzzles[$newAlternativePuzzle->getIdentifier()] = $newAlternativePuzzle;
+					}
 				}
 
 				unset($this->alternativePuzzles[$identifier]);
@@ -51,6 +55,6 @@ class Solver
 
 	public function getSolutions(): array
 	{
-		return $this->solutions;
+		return array_values($this->solutions);
 	}
 }

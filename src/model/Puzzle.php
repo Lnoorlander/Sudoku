@@ -6,11 +6,14 @@ class Puzzle
 {
 	private $rowsWithColumns;
 	private $solved;
+	private $identifier;
 
 	public function __construct(array $rowsWithColumns)
 	{
 		$this->rowsWithColumns = $rowsWithColumns;
 		$this->solved = false;
+
+		$this->setIdentifier();
 	}
 
 	public function fillOut(): void
@@ -59,19 +62,6 @@ class Puzzle
 		}
 
 		return $alternatives;
-	}
-
-	public function identifier(): string
-	{
-		$identifier = '';
-
-		foreach ($this->rowsWithColumns as $row) {
-			foreach ($row as $column) {
-				$identifier .= $column;
-			}
-		}
-
-		return $identifier;
 	}
 
 	private function possibleSolutionsForField(int $fieldRow, int $fieldColumn): array
@@ -153,6 +143,19 @@ class Puzzle
 		}
 	}
 
+	private function setIdentifier(): void
+	{
+		$identifier = '';
+
+		foreach ($this->rowsWithColumns as $row) {
+			foreach ($row as $column) {
+				$identifier .= $column;
+			}
+		}
+
+		$this->identifier = $identifier;
+	}
+
 	private function setSolved(): void
 	{
 		$solved = true;
@@ -166,6 +169,24 @@ class Puzzle
 		}
 
 		$this->solved = $solved;
+	}
+
+	public function solvedIdentifier(): string
+	{
+		$identifier = '';
+
+		foreach ($this->rowsWithColumns as $row) {
+			foreach ($row as $column) {
+				$identifier .= $column;
+			}
+		}
+
+		return $identifier;
+	}
+
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
 	}
 
 	public function getRowsWithColumns(): array
