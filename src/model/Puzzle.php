@@ -46,34 +46,35 @@ class Puzzle
 
 	public function createAlternatives(): array
 	{
-		$lowestSolutions = 9;
-		$alternatives = array();
+		$lowestSolutionCount = 9;
+		$possibleSolutions = [];
+		$possibleSolutionsRow = 0;
+		$possibleSolutionsColumn = 0;
 
 		foreach ($this->rowsWithColumns as $rowIndex => $row) {
 			foreach ($row as $columnIndex => $column) {
 				if ($column === 0) {
-					$possibleSolutions = $this->possibleSolutionsForField($rowIndex, $columnIndex);
-					$possibleSolutionsCount = \count($possibleSolutions);
+					$possibleSolutionsForField = $this->possibleSolutionsForField($rowIndex, $columnIndex);
+					$possibleSolutionsCount = \count($possibleSolutionsForField);
 
-					if ($possibleSolutionsCount > 1) {
-						if ($possibleSolutionsCount < $lowestSolutions) {
-							$lowestSolutions = $possibleSolutionsCount;
-						}
-
-						if ($possibleSolutionsCount === $lowestSolutions) {
-							$alternatives = [];
-
-							foreach ($possibleSolutions as $possibleSolution) {
-								$this->rowsWithColumns[$rowIndex][$columnIndex] = $possibleSolution;
-
-								$alternatives[] = new Puzzle($this->rowsWithColumns);
-
-								$this->rowsWithColumns[$rowIndex][$columnIndex] = 0;
-							}
-						}
+					if (($possibleSolutionsCount > 1) && $possibleSolutionsCount < $lowestSolutionCount) {
+						$lowestSolutionCount = $possibleSolutionsCount;
+						$possibleSolutions = $possibleSolutionsForField;
+						$possibleSolutionsRow = $rowIndex;
+						$possibleSolutionsColumn = $columnIndex;
 					}
 				}
 			}
+		}
+
+		$alternatives = [];
+
+		foreach ($possibleSolutions as $possibleSolution) {
+			$this->rowsWithColumns[$possibleSolutionsRow][$possibleSolutionsColumn] = $possibleSolution;
+
+			$alternatives[] = new Puzzle($this->rowsWithColumns);
+
+			$this->rowsWithColumns[$possibleSolutionsRow][$possibleSolutionsColumn] = 0;
 		}
 
 		return $alternatives;
