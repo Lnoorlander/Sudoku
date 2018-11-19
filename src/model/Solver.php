@@ -7,20 +7,17 @@ class Solver
 	private $originalPuzzle;
 	private $alternativePuzzles;
 	private $solutions;
-	private $filledPuzzles;
 
 	public function __construct(Puzzle $puzzle)
 	{
 		$this->originalPuzzle = $puzzle;
 		$this->alternativePuzzles = [];
 		$this->solutions = [];
-		$this->filledPuzzles = [];
 	}
 
 	public function solve(): void
 	{
 		$this->originalPuzzle->fillOut();
-		$this->filledPuzzles[] = $this->originalPuzzle->getIdentifier();
 
 		if ($this->originalPuzzle->getSolved()) {
 			$this->solutions[$this->originalPuzzle->solvedIdentifier()] = $this->originalPuzzle;
@@ -28,9 +25,7 @@ class Solver
 			$alternativePuzzles = $this->originalPuzzle->createAlternatives();
 
 			foreach ($alternativePuzzles as $alternativePuzzle) {
-				if (!isset($this->filledPuzzles[$alternativePuzzle->getIdentifier()])) {
-					$this->alternativePuzzles[$alternativePuzzle->getIdentifier()] = $alternativePuzzle;
-				}
+				$this->alternativePuzzles[$alternativePuzzle->getIdentifier()] = $alternativePuzzle;
 			}
 		}
 
@@ -41,7 +36,6 @@ class Solver
 	{
 		while (\count($this->alternativePuzzles) !== 0) {
 			foreach ($this->alternativePuzzles as $identifier => $alternativePuzzle) {
-				$this->filledPuzzles[] = $alternativePuzzle->getIdentifier();
 
 				if ($alternativePuzzle->fillOut()) {
 
@@ -51,9 +45,7 @@ class Solver
 						$alternativePuzzles = $alternativePuzzle->createAlternatives();
 
 						foreach ($alternativePuzzles as $newAlternativePuzzle) {
-							if (!isset($this->filledPuzzles[$newAlternativePuzzle->getIdentifier()])) {
-								$this->alternativePuzzles[$newAlternativePuzzle->getIdentifier()] = $newAlternativePuzzle;
-							}
+							$this->alternativePuzzles[$newAlternativePuzzle->getIdentifier()] = $newAlternativePuzzle;
 						}
 					}
 				}
