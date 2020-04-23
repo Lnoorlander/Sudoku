@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  sudoku_application:
+    container_name: sudoku_application
+    build: ./
+    ports:
+    - 80:80
